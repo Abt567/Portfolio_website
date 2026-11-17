@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather Analytics App | Abel Lema</title>
+  <meta name="description" content="The story behind Abel Lema's Weather Analytics App: a live Flask app with typo-tolerant city search, backgrounds that match the city's local time and weather, and search analytics.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="logo">Abel Lema</a>
+    <nav aria-label="Main">
+      <a href="index.html#projects">← All projects</a>
+      <a href="https://portfolio-2-a396.onrender.com/" class="nav-cta" target="_blank" rel="noopener">Try it live</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- INTRO -->
+  <section class="section case-hero">
+    <div class="wrap">
+      <p class="eyebrow">PROJECT STORY</p>
+      <h1>Weather Analytics App</h1>
+      <p class="case-lead">A live weather app I built to go from <em>"I know Flask"</em> to <strong>"here's what I built with Flask."</strong></p>
+      <ul class="chips chips-light">
+        <li>Python</li><li>Flask</li><li>SQLAlchemy</li><li>SQLite</li><li>Jinja</li><li>OpenWeather API</li><li>Open-Meteo API</li><li>Render</li>
+      </ul>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://portfolio-2-a396.onrender.com/" target="_blank" rel="noopener">Try the live app ↗</a>
+        <a class="btn btn-ghost" href="https://github.com/Abt567/weather-analytics-app" target="_blank" rel="noopener">See the code on GitHub ↗</a>
+      </div>
+      <p class="small-note">Free hosting, so the first load can take about 30 seconds to wake up.</p>
+      <img class="case-shot" src="images/weather/search.jpg" alt="The Weather Today search page, where you type a city and choose Celsius or Fahrenheit">
+    </div>
+  </section>
+
+  <!-- 1. WHY -->
+  <section class="section">
+    <div class="wrap narrow">
+      <p class="step-num">01 · WHY I BUILT IT</p>
+      <h2>Closing the gap between learning and showing</h2>
+      <p>When I started this, I didn't know how to use Flask or any of the tools that came with it. I wanted to learn them, but I also wanted something to show for it. There's a big gap between saying "I know Flask" and saying "here's what I built with Flask," and this project was how I closed it.</p>
+      <p>I picked weather because I wanted something useful. Not a static page, but something live that changes with what's happening in the world right now, and something I could call my own.</p>
+      <div class="callout">
+        <strong>Built on a student budget.</strong> I didn't want to pay for API calls, so I found a combination of free services that gave me everything I needed: OpenWeather for finding cities and current conditions, and Open-Meteo for the hourly and 7-day forecasts.
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. FEATURE: FUZZY SEARCH -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="story-row">
+        <div class="story-text">
+          <p class="step-num">02 · FEATURE</p>
+          <h2>Search any city, even with a typo</h2>
+          <p>Here's the problem: if you type "Calgray" into OpenWeather's city search, you get back <strong>nothing</strong>. Real people make typos, so I built my own matching on top of it.</p>
+          <ol class="steps">
+            <li><strong>Try the exact search first.</strong> If OpenWeather finds the city, done.</li>
+            <li><strong>If not, search wider.</strong> The app tries again with the longest word, the first word, and the first three letters of what you typed.</li>
+            <li><strong>Remove duplicates</strong> and anything missing coordinates.</li>
+            <li><strong>Score every result</strong> by how similar its spelling is to what you typed, and throw out anything under 55% similar.</li>
+            <li><strong>Skip regions that aren't cities</strong>, like a "county" or "province" with the same name.</li>
+            <li><strong>If there's more than one good match, ask.</strong> There's more than one Calgary in the world, so you pick the right one.</li>
+          </ol>
+        </div>
+        <figure class="story-img phone">
+          <img src="images/weather/choose-location.jpg" alt="A 'Which Calgary?' screen listing Calgary in Alberta, Scotland, Texas and New South Wales">
+          <figcaption>Searching "Calgary" finds four of them, so the app asks which one you mean.</figcaption>
+        </figure>
+      </div>
+      <div class="code-card">
+        <p class="code-title">The scoring step, from my code (simplified)</p>
+<pre><code>target = normalize(what_user_typed)
+for city in candidates:
+    similarity = SequenceMatcher(None, target, normalize(city.name)).ratio()
+    scored.append((similarity, city))
+
+scored.sort(reverse=True)
+if best_similarity &lt; 0.55:      # nothing close enough
+    return []
+# keep every city within 0.15 of the best match
+return [c for s, c in scored if s &gt;= best_similarity - 0.15]</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. FEATURE: LOCAL BACKGROUNDS -->
+  <section class="section">
+    <div class="wrap">
+      <div class="narrow">
+        <p class="step-num">03 · FEATURE</p>
+        <h2>Weather that looks like where you're searching</h2>
+        <p>The background changes to match the city you searched: not just its weather, but whether it's day, night, or sunset <em>there</em>. If it's noon in Calgary and you search London, you see London's night sky.</p>
+        <p>This was the part where I learned how much of programming is converting data from one form to another:</p>
+        <ol class="steps">
+          <li><strong>Coordinates → time zone.</strong> I take the city's latitude and longitude and look up its time zone (TimezoneFinder).</li>
+          <li><strong>Time zone → local time.</strong> Then I get the current time in that city (pytz).</li>
+          <li><strong>Local time vs. sunrise and sunset.</strong> Before sunrise or after sunset, it's night. Right around sunrise or sunset, it gets the sunset background. In places with no sunrise at all (polar night), it's always night.</li>
+          <li><strong>Then the weather itself.</strong> Storms, rain, snow and fog come first, then cold (under 10°C, or under 50°F; getting that check right for Fahrenheit was one of my bug fixes), then cloudy, clear or sunny.</li>
+          <li><strong>Text that stays readable.</strong> I grouped backgrounds by how light or dark they are, so the text and accent colours switch to stay readable on each one.</li>
+        </ol>
+      </div>
+      <div class="gallery">
+        <figure><img src="images/weather/night.jpg" alt="London at night with a full moon background"><figcaption>Night · London, GB</figcaption></figure>
+        <figure><img src="images/weather/sunset.jpg" alt="Sunrise background for Fairbanks, US at -7.2°C"><figcaption>Sunrise · Fairbanks, US</figcaption></figure>
+        <figure><img src="images/weather/sunny.jpg" alt="Sunny mountain background for Bogotá"><figcaption>Sunny · Bogotá, CO</figcaption></figure>
+        <figure><img src="images/weather/snow.jpg" alt="Snowy street background for Houston at -1.9°C"><figcaption>Snow · Houston, US</figcaption></figure>
+        <figure><img src="images/weather/fog.jpg" alt="Foggy forest background for Houston"><figcaption>Fog · Houston, US</figcaption></figure>
+        <figure><img src="images/weather/rain.jpg" alt="Rainy city background for San José, Uruguay"><figcaption>Rain · San José, UY</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ACCOUNTS + ANALYTICS -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="story-row flip">
+        <div class="story-text">
+          <p class="step-num">04 · FEATURE</p>
+          <h2>Accounts, saved searches and analytics</h2>
+          <p>You can sign up and log in (passwords are hashed, never stored as plain text), and every search you make is saved to a database. The analytics page then shows:</p>
+          <ul>
+            <li>The <strong>top 10 most-searched cities</strong> across every user</li>
+            <li><strong>Your last 15 searches</strong>, with country and time</li>
+          </ul>
+          <p><strong>This was the hardest part for me.</strong> I had to learn SQLAlchemy to write these queries. Learning it wasn't the hard part; applying it was. I'd worked with data sets before, but never data that keeps changing every time someone searches, while also fitting it into a page that has to look clean.</p>
+        </div>
+        <figure class="story-img">
+          <img src="images/weather/analytics.jpg" alt="Analytics page with a table of top searched cities and recent searches">
+          <figcaption>The analytics page: Calgary is the most searched city by far.</figcaption>
+        </figure>
+      </div>
+      <div class="code-card">
+        <p class="code-title">The "top 10 cities" query, from my code</p>
+<pre><code>top_cities = db.execute(
+    select(SearchEvent.city, func.count(SearchEvent.id))
+    .group_by(SearchEvent.city)
+    .order_by(func.count(SearchEvent.id).desc())
+    .limit(10)
+).all()</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. BEHIND THE SCENES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="story-row">
+        <div class="story-text">
+          <p class="step-num">05 · BEHIND THE SCENES</p>
+          <h2>When it worked on my laptop but not online</h2>
+          <p>Something always broke. The one that taught me the most: the app ran fine on my laptop but failed when I deployed it to Render. My requirements file listed packages without version numbers, so the server installed different versions than I had.</p>
+          <p>I fixed it by locking every package to an exact version and pinning the Python version. Since then I treat "it works on my machine" as the start of testing, not the end.</p>
+          <p>Later I also rewrote a big part of the CSS so the app works properly on phones, in both portrait and landscape.</p>
+        </div>
+        <figure class="story-img phone">
+          <img src="images/weather/mobile-moon.jpg" alt="The app on a phone showing Calgary's forecast on a night background">
+          <figcaption>The mobile layout, on a phone at night.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. LEARNED + NEXT -->
+  <section class="section section-alt">
+    <div class="wrap two-col">
+      <div class="card">
+        <p class="step-num">06 · WHAT I LEARNED</p>
+        <h3>Connecting tools is the real skill</h3>
+        <p>The biggest thing I learned is how important data conversion is: between data types, between formats, between API calls. Putting separate tools together and making them talk to each other was the hardest part, and it's the skill I'll use in everything I build from here.</p>
+      </div>
+      <div class="card card-blue">
+        <p class="step-num step-num-light">07 · WHAT'S NEXT</p>
+        <h3>From showing the weather to predicting it</h3>
+        <p>Next, I want to add a model that predicts a city's weather from about 20 years of its past weather data. That's the bridge between this project and where I'm headed: building AI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section contact">
+    <div class="wrap contact-inner">
+      <div>
+        <h2>Try it yourself</h2>
+        <p class="lead">Search your own city, or try a typo, and see what happens.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-dark" href="https://portfolio-2-a396.onrender.com/" target="_blank" rel="noopener">Open the live app ↗</a>
+        <a class="btn btn-ghost" href="index.html#projects">← Back to all projects</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">© 2026 Abel Lema · Built and deployed by me</div>
+</footer>
+
+</body>
+</html>

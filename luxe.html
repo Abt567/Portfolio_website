@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luxe Mobile Detailing | Abel Lema</title>
+  <meta name="description" content="The story behind the Luxe Mobile Detailing booking website: a real Calgary client, a double-booking problem, and a Flask site connected to Google Calendar and email.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="logo">Abel Lema</a>
+    <nav aria-label="Main">
+      <a href="index.html#projects">← All projects</a>
+      <a href="https://luxe-detailing-demo.onrender.com/" class="nav-cta" target="_blank" rel="noopener">Try the demo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- INTRO -->
+  <section class="section case-hero">
+    <div class="wrap">
+      <p class="eyebrow">PROJECT STORY · CLIENT WORK</p>
+      <h1>Luxe Mobile Detailing</h1>
+      <p class="case-lead">A booking website I built for a real Calgary business, so customers could book in a couple of minutes and <strong>the owner never double-booked a slot again.</strong></p>
+      <ul class="chips chips-light">
+        <li>Python</li><li>Flask</li><li>JavaScript</li><li>HTML/CSS</li><li>Google Calendar API</li><li>Gmail SMTP</li><li>Render</li>
+      </ul>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://luxe-detailing-demo.onrender.com/" target="_blank" rel="noopener">Try the live demo ↗</a>
+        <a class="btn btn-ghost" href="https://github.com/Abt567/luxe-detailing-demo" target="_blank" rel="noopener">See the code on GitHub ↗</a>
+      </div>
+      <img class="case-shot" src="images/luxe/home.jpg" alt="The Luxe Mobile Detailing homepage with a gold car logo, Book Now and View Gallery buttons">
+    </div>
+  </section>
+
+  <!-- 1. HOW IT STARTED -->
+  <section class="section">
+    <div class="wrap narrow">
+      <p class="step-num">01 · HOW IT STARTED</p>
+      <h2>My first real client</h2>
+      <p>An old friend of mine was starting a mobile car detailing company. He'd heard I was studying computer science and asked if I could build his website. He sent me a barbershop's website as inspiration, and from there it was up to me.</p>
+      <p>That made it different from anything I'd built for school. There was a real business, a real owner, real customers, and a deadline that wasn't mine to move.</p>
+    </div>
+  </section>
+
+  <!-- 2. THE PROBLEM -->
+  <section class="section section-alt">
+    <div class="wrap narrow">
+      <p class="step-num">02 · THE PROBLEM</p>
+      <h2>Too many ways to book</h2>
+      <p>Before the website, customers booked through whatever was easiest for them: a phone call, a text, word of mouth, or an Instagram message. With bookings coming in from several places, keeping track of the schedule was hard.</p>
+      <div class="callout">
+        <strong>Here's what that looked like:</strong> one customer books the 15th at 8 AM over Instagram. Another books the same 15th at 8 AM by phone. Neither channel knows about the other, and now the owner has two cars and one time slot.
+      </div>
+      <p style="margin-top:20px">The fix wasn't just "make a website." It was making one place every booking has to go through, so a slot that's taken looks taken to everyone.</p>
+    </div>
+  </section>
+
+  <!-- 3. THE SOLUTION, STEP BY STEP -->
+  <section class="section">
+    <div class="wrap">
+      <div class="narrow">
+        <p class="step-num">03 · HOW IT WORKS</p>
+        <h2>One booking, start to finish</h2>
+        <p>Here's what happens when a customer books, and what the site does behind the scenes at each step.</p>
+      </div>
+
+      <div class="story-row" style="margin-top:40px">
+        <div class="story-text">
+          <h3>1. Pick a package</h3>
+          <p>Each package takes a different amount of time: <strong>Standard is 1.5 hours, Premium is 3 hours, and Elite is a full 8 hours.</strong> That matters, because the site uses the package length to decide which times are actually free.</p>
+        </div>
+        <figure class="story-img">
+          <img src="images/luxe/packages.jpg" alt="Three detailing packages: Standard $140.99 for 1.5 hours, Premium $250.99 for 3 hours, Elite $500.99 for 8 hours">
+        </figure>
+      </div>
+
+      <div class="story-row flip" style="margin-top:56px">
+        <div class="story-text">
+          <h3>2. Pick a date, see only the open times</h3>
+          <p>When a date is picked, the site reads the owner's Google Calendar and works out which times are really open:</p>
+          <ul>
+            <li>Business hours are 8 AM to 3 PM, checked in 15-minute steps.</li>
+            <li>Every existing booking blocks its time <strong>plus a 35-minute travel buffer</strong>, because it's a mobile business and the owner has to drive to the next car.</li>
+            <li>A slot only shows up if the whole job fits before closing without overlapping anything.</li>
+          </ul>
+          <p>So the customer can't pick a time that's already taken. That's the double-booking problem, solved.</p>
+        </div>
+        <figure class="story-img">
+          <img src="images/luxe/booking.jpg" alt="Booking page with a calendar where November 18 is selected and three open time slots: 8:00, 8:15 and 8:30">
+          <figcaption>Only the times that fit the chosen package show up.</figcaption>
+        </figure>
+      </div>
+
+      <div class="story-row" style="margin-top:56px">
+        <div class="story-text">
+          <h3>3. Book it: confirmed, emailed and on the calendar</h3>
+          <p>When the customer submits, three things happen at once:</p>
+          <ul>
+            <li>The booking is written straight into the owner's Google Calendar, with the vehicle, address, phone number and add-ons in the event.</li>
+            <li>The customer gets a confirmation email with all their booking details.</li>
+            <li>The customer sees a confirmation page.</li>
+          </ul>
+          <p>The owner doesn't have to copy anything from a DM into a calendar anymore.</p>
+        </div>
+        <figure class="story-img">
+          <img src="images/luxe/confirmed.jpg" alt="Booking Confirmed page thanking the customer for choosing Luxe Mobile Detailing">
+        </figure>
+      </div>
+
+      <figure class="story-img email-shot">
+        <img src="images/luxe/email.jpg" alt="Confirmation email listing the package, date, time and vehicle for the booking">
+        <figcaption>The confirmation email from the demo. I blurred the address and phone number.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 4. THE HARD PART -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="narrow">
+        <p class="step-num">04 · THE HARD PART</p>
+        <h2>Two kinds of hard</h2>
+      </div>
+      <div class="two-col" style="margin-top:24px">
+        <div class="card">
+          <h3>Hardest to build: connecting everything</h3>
+          <p>Getting the site to talk to Google Calendar, and then tying that to the confirmation emails, was the most technically difficult part. The site has to read the calendar to show open times, write to it when someone books, and send an email, all in one smooth flow for the customer.</p>
+        </div>
+        <div class="card">
+          <h3>Hardest to see coming: real users</h3>
+          <p>I hadn't planned for people typing strange addresses or wrong information. So I added checks on the server: a real email format, a Calgary phone number (403, 587, 825 or 368), a Calgary postal code (T2 or T3), and an address in Calgary, since the business only served the city.</p>
+        </div>
+      </div>
+      <div class="code-card">
+        <p class="code-title">How a time slot gets checked, from my code (simplified)</p>
+<pre><code>cur = open_time                      # 8:00 AM
+while cur + package_length &lt;= close_time:     # 3:00 PM
+    slot_start, slot_end = cur, cur + package_length
+    # every existing booking blocks its time + a 35-minute travel buffer
+    taken = any(slot_start &lt; busy_end + buffer and slot_end &gt; busy_start
+                for busy_start, busy_end in calendar_events)
+    if not taken:
+        open_slots.append(slot_start)
+    cur += 15 minutes</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. WORKING WITH A CLIENT -->
+  <section class="section">
+    <div class="wrap narrow">
+      <p class="step-num">05 · WORKING WITH A REAL CLIENT</p>
+      <h2>The business comes before the code</h2>
+      <p>The biggest lesson from this project wasn't technical. The company's needs come before the technical side. The owner had a strict deadline for when the site needed to be done, so I had to cut some of the things I wanted to add as a developer.</p>
+      <p>That was hard to accept at first. As a developer, a project never feels finished, because you can always see the next thing to build. But a site that works and launches on time is worth more to a business than a perfect one that's late.</p>
+      <p>After launch, the site took real bookings, and I kept fixing issues and updating features as the business's needs changed.</p>
+    </div>
+  </section>
+
+  <!-- 6. TODAY -->
+  <section class="section section-alt">
+    <div class="wrap narrow">
+      <p class="step-num">06 · WHERE IT IS TODAY</p>
+      <h2>Rebuilt as a public demo</h2>
+      <p>The business has since stopped operating, so I turned the site into a demo that runs on my own accounts. Making a real booking site safe to leave open to the public meant a few changes:</p>
+      <ul class="plain-list">
+        <li>The calendar and email connections only switch on when their settings exist. Without them, the site simulates a realistic, partly-booked day, so it runs anywhere.</li>
+        <li>Each visitor can make at most 3 bookings an hour, so nobody can spam it.</li>
+        <li>Every confirmation email is clearly marked as a demo.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. LEARNED + NEXT -->
+  <section class="section">
+    <div class="wrap two-col">
+      <div class="card">
+        <p class="step-num">07 · WHAT I'D DO DIFFERENTLY</p>
+        <h3>Plan first, then build</h3>
+        <p>Next time I'd start with a plan before writing any code, and talk with the owner about what the business actually needs. Knowing that up front makes it much easier to decide what to cut when the deadline gets close.</p>
+      </div>
+      <div class="card card-blue">
+        <p class="step-num step-num-light">08 · WHAT I'D IMPROVE</p>
+        <h3>Real address lookup</h3>
+        <p>Right now the address check only makes sure the customer typed something reasonable that includes Calgary. I'd replace that with a real address search, so the site finds the customer's actual address and confirms it before they book.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section contact">
+    <div class="wrap contact-inner">
+      <div>
+        <h2>Try booking a detail</h2>
+        <p class="lead">Pick a package and a date and watch the open times change. It's a demo, so no real appointment gets made.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-dark" href="https://luxe-detailing-demo.onrender.com/" target="_blank" rel="noopener">Open the live demo ↗</a>
+        <a class="btn btn-ghost" href="index.html#projects">← Back to all projects</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">© 2026 Abel Lema · Built and deployed by me</div>
+</footer>
+
+</body>
+</html>
